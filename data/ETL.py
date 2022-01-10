@@ -92,8 +92,3 @@ class ETL:
             upload_file_path = os.path.join(raw_data_file_path, temp_filename)
             with open(upload_file_path, "rb") as data:
                 blob_client.upload_blob(data)
-
-
-test = ETL()
-# test.upload_raw_data_to_azure(1,7)
-test.transform_raw_data(1, 2, 2021)

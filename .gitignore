@@ -127,9 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-/data/transformed_data/
-/data/raw_data/
-/data/extracted_from_azure/
+/data/transformed_data/*
+/data/raw_data/*
+/data/extracted_from_azure/*
 
-.idea
+.idea/
+.env
 

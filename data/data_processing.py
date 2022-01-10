@@ -126,19 +126,3 @@ class Data_processing:
                     ),
                 ]
             )
-
-
-# Data_processing(1,7,2021).run()
-
-a = Data_processing(1, 2, 2021)
-a.run()
-a.test_if_correct()
-
-a.yellow_taxi_dataframe.max()
-
-# b = a.read_csv_file('01')
-# c = a.remove_negative_passenger_count(b)
-# d = a.rename_columns(c)
-# e = a.remove_outliers(d,'01')
-# f = a.remove_extremely_short_and_long_rides(e)
-# a.save_cleaned_csv_file('01',f)
