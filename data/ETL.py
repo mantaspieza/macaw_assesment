@@ -125,10 +125,3 @@ class ETL:
         )
 
         my_container.delete_blob(blob_name)
-
-
-etl = ETL()
-
-etl.upload_transformed_data_to_azure(7, 7, 2021)
-
-# etl.delete_blob(container_name='transformed-yellow-taxi-data' ,blob_name='clean_yellow_trip_data_2021-07.csv')

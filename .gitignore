@@ -132,6 +132,6 @@ dmypy.json
 /data/extracted_from_azure_raw/*
 /data/extracted_from_azure_transformed/*
 
-.idea/
+.idea
 .env
 
