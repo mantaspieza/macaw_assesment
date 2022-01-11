@@ -31,6 +31,7 @@ connection_string = textwrap.dedent(
 """
 )
 # create a new PYODBC connectio object
+# print(connection_string)
 
 cntc: pyodbc.Connection = pyodbc.connect(connection_string)
 

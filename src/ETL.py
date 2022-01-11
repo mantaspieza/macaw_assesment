@@ -4,10 +4,7 @@
 import os, uuid
 from azure.storage.blob import (
     BlobServiceClient,
-    BlobClient,
-    ContainerClient,
     __version__,
-    upload_blob_to_url,
 )
 from dotenv import load_dotenv
 
@@ -35,7 +32,7 @@ class ETL:
     ):
         container_name = "raw-yellow-taxi-data"
         self.blob_service_client.create_container(container_name)
-        raw_data_file_path = "raw_data"
+        raw_data_file_path = "../data/raw_data"
         months = [str(i).zfill(2) for i in range(start_month, end_month + 1)]
 
         for month in months:
@@ -64,7 +61,7 @@ class ETL:
             "raw-yellow-taxi-data"
         )
         list_of_blobs = my_container.list_blobs()
-        local_blob_path = "extracted_from_azure_raw"
+        local_blob_path = "../data/extracted_from_azure_raw"
         for blob in list_of_blobs:
             single_csv_file = (
                 my_container.get_blob_client(blob).download_blob().readall()
@@ -105,7 +102,7 @@ class ETL:
             "transformed-yellow-taxi-data"
         )
         list_of_blobs = my_container.list_blobs()
-        local_blob_path = "extracted_from_azure_transformed"
+        local_blob_path = "../data/extracted_from_azure_transformed"
         for blob in list_of_blobs:
             single_csv_file = (
                 my_container.get_blob_client(blob).download_blob().readall()
