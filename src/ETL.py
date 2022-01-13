@@ -8,7 +8,7 @@ from azure.storage.blob import (
 )
 from dotenv import load_dotenv
 
-from data_processing import Data_processing
+from src.data_processing import Data_processing
 
 load_dotenv()
 
@@ -61,7 +61,7 @@ class ETL:
             "raw-yellow-taxi-data"
         )
         list_of_blobs = my_container.list_blobs()
-        local_blob_path = "../data/extracted_from_azure_raw"
+        local_blob_path = "data/extracted_from_azure_raw"
         for blob in list_of_blobs:
             single_csv_file = (
                 my_container.get_blob_client(blob).download_blob().readall()
@@ -80,7 +80,7 @@ class ETL:
             self.blob_service_client.create_container(container_name)
         except:
             self.blob_service_client.get_container_client(container_name)
-        raw_data_file_path = "../data/transformed_data"
+        raw_data_file_path = "data/transformed_data"
         months = [str(i).zfill(2) for i in range(start_month, end_month + 1)]
 
         for month in months:
@@ -102,7 +102,7 @@ class ETL:
             "transformed-yellow-taxi-data"
         )
         list_of_blobs = my_container.list_blobs()
-        local_blob_path = "../data/extracted_from_azure_transformed"
+        local_blob_path = "data/extracted_from_azure_transformed"
         for blob in list_of_blobs:
             single_csv_file = (
                 my_container.get_blob_client(blob).download_blob().readall()

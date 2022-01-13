@@ -35,7 +35,7 @@ class database_interactions:
 
     def insert_from_dataframe(self):
         df = pd.read_csv(
-            "../data/extracted_from_azure_transformed/clean_yellow_trip_data_2021-01.csv"
+            "data/extracted_from_azure_transformed/clean_yellow_trip_data_2021-01.csv"
         )
         # df["pickup_datetime"] = pd.to_datetime(df["pickup_datetime"]).astype(str)
         # df["dropoff_datetime"] = pd.to_datetime(df["dropoff_datetime"]).astype(str)

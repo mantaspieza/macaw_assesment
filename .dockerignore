@@ -1,4 +1,5 @@
 .env
 .gitignore
-.idea
+.idea/*
 .data/__pycache__
+.gitignore

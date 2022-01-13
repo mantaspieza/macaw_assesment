@@ -39,7 +39,7 @@ class Data_processing:
 
     def read_csv_file(self, month: str) -> pd.DataFrame:
         temp_dataframe = pd.read_csv(
-            f"../data/extracted_from_azure_raw/yellow_tripdata_{self.year}-{month}.csv",
+            f"data/extracted_from_azure_raw/yellow_tripdata_{self.year}-{month}.csv",
             usecols=self.columns_to_extract,
             parse_dates=["tpep_pickup_datetime", "tpep_dropoff_datetime"],
         )
@@ -110,7 +110,7 @@ class Data_processing:
 
     def save_cleaned_csv_file(self, month, dataframe):
         dataframe.to_csv(
-            f"../data/transformed_data/clean_yellow_trip_data_{self.year}-"
+            f"data/transformed_data/clean_yellow_trip_data_{self.year}-"
             + str(month)
             + ".csv",
             index=False,
