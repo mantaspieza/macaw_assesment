@@ -1,4 +1,5 @@
 import pandas as pd
+from pandas.core.frame import DataFrame
 
 
 class Data_processing:
@@ -27,7 +28,7 @@ class Data_processing:
         return temp_dataframe
 
     def rename_columns(self, temp_dataframe: pd.DataFrame) -> pd.DataFrame:
-        # print('paima')
+
         new_temp_dataframe = temp_dataframe.rename(
             columns={
                 "tpep_pickup_datetime": "pickup_datetime",
@@ -97,6 +98,16 @@ class Data_processing:
 
         return temp_dataframe
 
+    def correct_datetime_strings_for_database_input(self, temp_dataframe: pd.DataFrame):
+        temp_dataframe["pickup_datetime"] = (
+            temp_dataframe["pickup_datetime"].astype(str).str.replace(" ", "T")
+        )
+        temp_dataframe["dropoff_datetime"] = (
+            temp_dataframe["dropoff_datetime"].astype(str).str.replace(" ", "T")
+        )
+        temp_dataframe["passenger_count"] = temp_dataframe.passenger_count.astype(int)
+        return temp_dataframe
+
     def save_cleaned_csv_file(self, month, dataframe):
         dataframe.to_csv(
             f"../data/transformed_data/clean_yellow_trip_data_{self.year}-"
@@ -112,15 +123,16 @@ class Data_processing:
             dataframe = self.rename_columns(dataframe)
             dataframe = self.remove_outliers(dataframe, month)
             dataframe = self.remove_extremely_short_and_long_rides(dataframe)
+            # dataframe = self.correct_datetime_strings_for_database_input(dataframe)
             self.save_cleaned_csv_file(month, dataframe)
 
-    def test_if_correct(self):
-        for i in self.months:
-            self.yellow_taxi_dataframe = pd.concat(
-                [
-                    self.yellow_taxi_dataframe,
-                    pd.read_csv(
-                        f"../data/transformed_data/clean_yellow_trip_data_{self.year}-{i}.csv"
-                    ),
-                ]
-            )
+    # def test_if_correct(self):
+    #     for i in self.months:
+    #         self.yellow_taxi_dataframe = pd.concat(
+    #             [
+    #                 self.yellow_taxi_dataframe,
+    #                 pd.read_csv(
+    #                     f"./data/transformed_data/clean_yellow_trip_data_{self.year}-{i}.csv"
+    #                 ),
+    #             ]
+    #

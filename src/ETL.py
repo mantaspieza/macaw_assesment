@@ -32,7 +32,7 @@ class ETL:
     ):
         container_name = "raw-yellow-taxi-data"
         self.blob_service_client.create_container(container_name)
-        raw_data_file_path = "../data/raw_data"
+        raw_data_file_path = "./data/raw_data"
         months = [str(i).zfill(2) for i in range(start_month, end_month + 1)]
 
         for month in months:
@@ -80,7 +80,7 @@ class ETL:
             self.blob_service_client.create_container(container_name)
         except:
             self.blob_service_client.get_container_client(container_name)
-        raw_data_file_path = "transformed_data"
+        raw_data_file_path = "../data/transformed_data"
         months = [str(i).zfill(2) for i in range(start_month, end_month + 1)]
 
         for month in months:
@@ -95,7 +95,7 @@ class ETL:
             # uploads data to azure
             upload_file_path = os.path.join(raw_data_file_path, temp_filename)
             with open(upload_file_path, "rb") as data:
-                blob_client.upload_blob(data)
+                blob_client.upload_blob(data, overwrite=True)
 
     def extract_transformed_taxi_data_from_azure(self):
         my_container = self.blob_service_client.get_container_client(
