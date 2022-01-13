@@ -17,7 +17,7 @@ formatter = logging.Formatter(
 )
 
 file_handler = logging.FileHandler("logs/ETL.log", "w")
-file_handler.setLevel(logging.logging.ERROR)
+file_handler.setLevel(logging.ERROR)
 file_handler.setFormatter(formatter)
 
 stream_handler = logging.StreamHandler()
@@ -47,6 +47,7 @@ class ETL:
         try:
             container_name = "raw-yellow-taxi-data"
             self.blob_service_client.create_container(container_name)
+            logger.debug("container created successfully")
             raw_data_file_path = "./data/raw_data"
             months = [str(i).zfill(2) for i in range(start_month, end_month + 1)]
 
@@ -56,13 +57,14 @@ class ETL:
                 blob_client = self.blob_service_client.get_blob_client(
                     container=container_name, blob=temp_filename
                 )
+                logger.debug("blob client created")
 
                 # uploads data to azure
                 upload_file_path = os.path.join(raw_data_file_path, temp_filename)
                 with open(upload_file_path, "rb") as data:
                     blob_client.upload_blob(data)
 
-                logger.error(
+                logger.debug(
                     f"master, problem uploading {temp_filename} to container {container_name}"
                 )
                 logger.info(
@@ -81,7 +83,7 @@ class ETL:
 
             with open(download_file_path, "wb") as file:
                 file.write(file_content)
-            logger.error("There was a problem extracting single taxi blob", exc_info=1)
+            logger.debug("There was a problem extracting single taxi blob")
         except:
             logger.exception(
                 f"there was a problem reaching single {file_name} at {local_blob_path}"
@@ -105,7 +107,7 @@ class ETL:
 
             logger.info(f"blob was successfuly extracted")
         except ConnectionError:
-            logger.error(
+            logger.exception(
                 "there was an error while extracting raw taxi data from azure, master"
             )
         else:
@@ -116,10 +118,9 @@ class ETL:
     def transform_raw_data(self, start_month: int, end_month: int, year: int):
         try:
             data_processing = Data_processing(start_month, end_month, year)
+            logger.debug("data processing class loaded successfully")
             data_processing.run()
-            logger.error(
-                'there was a problem with data_processing check it"s LOG!', exc_info=1
-            )
+
         except ValueError:
             logger.exception(
                 "tere is definitely a PROBLEM in data processing -> check LOG!"
@@ -134,13 +135,10 @@ class ETL:
             container_name = "transformed-yellow-taxi-data"
             try:
                 self.blob_service_client.create_container(container_name)
-                logger.error(
-                    "there was problem with creating service client when needed",
-                    exc_info=1,
-                )
-            except:
+                logger.debug(f"container {container_name} created successfully")
+            except ConnectionRefusedError:
                 self.blob_service_client.get_container_client(container_name)
-                logger.error("there was a PROBLEM getting container client")
+                logger.warning("container already exists, container client received")
 
             raw_data_file_path = "data/transformed_data"
             months = [str(i).zfill(2) for i in range(start_month, end_month + 1)]
@@ -150,17 +148,16 @@ class ETL:
                 temp_filename = (
                     "clean_yellow_trip_data_" + str(year) + "-" + str(month) + ".csv"
                 )
-                logger.error(f"{temp_filename} has failed to be read", exc_info=1)
+                logger.debug(f"{temp_filename} has been read")
                 blob_client = self.blob_service_client.get_blob_client(
                     container=container_name, blob=temp_filename
                 )
-                logger.error("blob client failed readin failed", exc_info=1)
+                logger.debug("blob lcient connection was done successfully")
 
-                # uploads data to azure
                 upload_file_path = os.path.join(raw_data_file_path, temp_filename)
                 with open(upload_file_path, "rb") as data:
                     blob_client.upload_blob(data, overwrite=True)
-                logger.error(f"Problem inserting {temp_filename} to azure.", exc_info=1)
+                logger.debug(f"inserting {temp_filename} to azure.", exc_info=1)
                 logger.info(
                     f"{temp_filename} was succesfully inserted to {container_name}"
                 )
@@ -178,14 +175,11 @@ class ETL:
             my_container = self.blob_service_client.get_container_client(
                 "transformed-yellow-taxi-data"
             )
-            logger.error(
-                "there was a problem getting azure blob container client", exc_info=1
-            )
+            logger.debug("container client retreived")
             list_of_blobs = my_container.list_blobs()
+            logger.debug("list of blobs received")
             local_blob_path = "data/extracted_from_azure_transformed"
-            logger.error(
-                f"local blob path is incorrect extracting transformed data", exc_info=1
-            )
+            logger.debug("local path created for blobs to be extracted")
 
             for blob in list_of_blobs:
                 single_csv_file = (
@@ -209,7 +203,7 @@ class ETL:
             my_container = self.blob_service_client.get_container_client(
                 container=container_name
             )
-            logger.error(f"unable to connect to container: {container_name}")
+            logger.debug(f"successfully connected to {container_name}")
             my_container.delete_container()
             logger.debug("container successfully deleted")
         except ConnectionError or ValueError:
@@ -224,12 +218,10 @@ class ETL:
             my_container = self.blob_service_client.get_container_client(
                 container=container_name
             )
-            logger.error(
-                "there was an error connecting to blob service client deliting blob"
-            )
+            logger.debug(f"successfully connected to {container_name}")
             my_container.delete_blob(blob_name)
             logger.debug("there was an error deleting single blob")
-        except ValueError:
+        except ValueError or ConnectionError:
             logger.exception(
                 "there was a problem deleting single blob. check container if correct {container_name}, {blob_name}"
             )

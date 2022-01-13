@@ -13,7 +13,7 @@ formatter = logging.Formatter(
 )
 
 file_handler = logging.FileHandler("logs/database_interactions.log", "w")
-file_handler.setLevel(logging.logging.ERROR)
+file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(formatter)
 
 stream_handler = logging.StreamHandler()

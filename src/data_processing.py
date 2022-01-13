@@ -10,7 +10,7 @@ formatter = logging.Formatter(
 )
 
 file_handler = logging.FileHandler("logs/data_processing.log", "w")
-file_handler.setLevel(logging.logging.ERROR)
+file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(formatter)
 
 stream_handler = logging.StreamHandler()
@@ -47,8 +47,8 @@ class Data_processing:
             logger.exception(
                 f"While removing negative passenger count in {temp_dataframe}"
             )
-        finally:
-            logger.debug("Passenger count was limited >0 successfully")
+        else:
+            logger.debug(f"successfully removed negative passenger count")
 
         return temp_dataframe
 
@@ -63,7 +63,7 @@ class Data_processing:
             )
         except ValueError:
             logger.exception(f"Problem changing collumn names at {temp_dataframe}")
-        finally:
+        else:
             logger.debug(f"{temp_dataframe} columns were renamed correctly")
         return new_temp_dataframe
 
@@ -74,11 +74,12 @@ class Data_processing:
                 usecols=self.columns_to_extract,
                 parse_dates=["tpep_pickup_datetime", "tpep_dropoff_datetime"],
             )
+            logger.debug("dataframe was successfully read to pandas")
         except ValueError:
             logger.exception(
-                f"problem reading reding in dataframe month value > {month}"
+                f"problem reading reding in dataframe month value -> {month}"
             )
-        finally:
+        else:
             logger.debug(f"{month}.csv was read in correctly")
 
         return temp_dataframe
@@ -97,6 +98,7 @@ class Data_processing:
                         <= f"{self.year}-" + str(month) + "-28"
                     )
                 ]
+                logger.debug("february date outliers removed successfully")
             elif int(month) in [4, 6, 9, 11]:
                 temp_dataframe = temp_dataframe[
                     (
@@ -108,6 +110,7 @@ class Data_processing:
                         <= f"{self.year}-" + str(month) + "-30"
                     )
                 ]
+                logger.debug("months with 30 days has their outliers removed")
             else:
                 temp_dataframe = temp_dataframe[
                     (
@@ -119,16 +122,15 @@ class Data_processing:
                         <= f"{self.year}-" + str(month) + "-31"
                     )
                 ]
+                logger.debug("mohts with 31 day has their outliers removed!")
         except ValueError:
             logger.exception(
                 f"There was a problem removing outliers in {temp_dataframe}"
             )
-        finally:
-            logger.debug(f"Outliers removed in {temp_dataframe}")
+        else:
+            logger.debug(f"ALL outliers removed successfully")
 
         return temp_dataframe
-
-    # def create_yellow_taxi_dataframe(self):
 
     def remove_extremely_short_and_long_rides(self, temp_dataframe: pd.DataFrame):
 
@@ -138,8 +140,9 @@ class Data_processing:
                 .astype("timedelta64[s]")
                 .astype(int)
             )
+            logger.debug("trip duration was calculated successfully")
             temp_dataframe["trip_duration_in_seconds"] = trip_duration_in_seconds
-
+            logger.debug("Trip duration column was created successfully")
             temp_dataframe = temp_dataframe[
                 (
                     temp_dataframe.trip_duration_in_seconds > 5
@@ -148,25 +151,14 @@ class Data_processing:
                     temp_dataframe.trip_duration_in_seconds < 43200
                 )  # 12 hours shifts is a common standard in ny taxies
             ].drop("trip_duration_in_seconds", axis=1)
+            logger.debug("extremely short rides and extremely long rides trimmed")
         except ValueError:
             logger.exception(
                 f"There was an error restricting trip duration in {temp_dataframe}"
             )
-        finally:
+        else:
             logger.debug("Trip duration outliers successfuly removed")
         return temp_dataframe
-
-    # def correct_datetime_strings_for_database_input(self, temp_dataframe: pd.DataFrame):
-
-    #     try:
-    #         temp_dataframe["pickup_datetime"] = (
-    #             temp_dataframe["pickup_datetime"].astype(str).str.replace(" ", "T")
-    #         )
-    #         temp_dataframe["dropoff_datetime"] = (
-    #             temp_dataframe["dropoff_datetime"].astype(str).str.replace(" ", "T")
-    #         )
-    #         temp_dataframe["passenger_count"] = temp_dataframe.passenger_count.astype(int)
-    #     return temp_dataframe
 
     def save_cleaned_csv_file(self, month, dataframe: pd.DataFrame):
 
@@ -179,7 +171,7 @@ class Data_processing:
             )
         except ValueError:
             logger.exception(f"There was a problem saving to csv {dataframe}")
-        finally:
+        else:
             logger.debug(f"{dataframe} was saved successfully")
 
     def run(self):
@@ -204,14 +196,3 @@ class Data_processing:
             logger.info(
                 "ALL dataframes were successfuly transformed and saved. Congratz"
             )
-
-    # def test_if_correct(self):
-    #     for i in self.months:
-    #         self.yellow_taxi_dataframe = pd.concat(
-    #             [
-    #                 self.yellow_taxi_dataframe,
-    #                 pd.read_csv(
-    #                     f"./data/transformed_data/clean_yellow_trip_data_{self.year}-{i}.csv"
-    #                 ),
-    #             ]
-    #
