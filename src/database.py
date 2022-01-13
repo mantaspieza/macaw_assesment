@@ -31,13 +31,14 @@ class database_interactions:
 
     def create_connection(self) -> Tuple:
         connection = pyodbc.connect(self.connection_string)
-        cursor = connection.cursor
+        cursor = connection.cursor()
 
         return connection, cursor
 
     def close_connection(self, connection: Any, cursor: Any) -> None:
-        cursor.close()
-        connection.close()
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
 
     def create_table(self):
         conn, cursor = self.create_connection()
@@ -83,45 +84,43 @@ class database_interactions:
 
         self.close_connection(conn, cursor)
 
-    # def insert_from_dataframe(self):
-    #     df = pd.read_csv(
-    #         "data/extracted_from_azure_transformed/clean_yellow_trip_data_2021-01.csv"
-    #     )
+    def get_average_passenger_count_between_two_dates(
+        self, start_datetime_of_period: str, end_datetime_of_period: str
+    ):
+        conn, cursor = self.create_connection()
 
-    #     conn = pyodbc.connect(self.connection_string)
-    #     cursor = conn.cursor()
-    #     MY_TABLE = "yellow_taxi_info_2021"
-    #     # try:
-    #     #     cursor.execute("""CREATE TABLE yellow_taxi_info_2021 (
-    #     #         pickup_datetime DATETIME2,
-    #     #         dropoff_datetime DATETIME2,
-    #     #         passenger_count INT,
-    #     #         );""")
-    #     #     print('table created')
-    #     # except:
-    #     #     cursor.execute("""
-    #     #     TRUNCATE TABLE yellow_taxi_info_2021
-    #     #     """)
-    #     #     print(' TRUNCATED')
+        sql_code = f"""SELECT avg(cast(passenger_count as float))
+                             from {self.table_name} as my_table
+                                 where 
+                                    my_table.pickup_datetime >= {start_datetime_of_period}
+                                    and
+                                    my_table.dropoff_datetime <= {end_datetime_of_period}
+                                    ;
+                                 """
+        result = cursor.execute(sql_code)
 
-    #     # conn.commit()
-    #     # print('commited1')
-    #     # cursor.fast_executemany = True
-    #     # for index,row in df.iterrows():
-    #     #     cursor.executemany("INSERT INTO yellow_taxi_info_2021 ([pickup_datetime],[dropoff_datetime],[passenger_count]) values (?,?,?) ", row['pickup_datetime'],row['dropoff_datetime'],row['passenger_count'])
-    #     #     cursor.commit()
+        print("The average between two selected dates is: ", result[0])
 
-    #     # curosr.close()
+    def get_average_passenger_count_between_two_dates(
+        self, start_datetime_of_period: str, end_datetime_of_period: str
+    ):
+        conn, cursor = self.create_connection()
+        try:
+            print("connected")
+            print(type(start_datetime_of_period))
+            print(end_datetime_of_period)
 
-    #     # conn.close()
-    #     # print('connection closed')
+            sql_code = f"""select avg(cast(passenger_count as float)) from {self.table_name} as a where a.pickup_datetime > '{start_datetime_of_period}' and a.dropoff_datetime < '{end_datetime_of_period}' ;
+                                    """
+            cursor.execute(sql_code)
+            print("code_executed")
+            records = cursor.fetchall()
 
-    #     insert_to_tmp_tbl_stmt = f"INSERT INTO {MY_TABLE} VALUES (?,?,?)"
-
-    #     cursor = conn.cursor()
-    #     cursor.fast_executemany = True
-    #     cursor.executemany(insert_to_tmp_tbl_stmt, df.values.tolist())
-    #     print(f"{len(df)} rows inserted to the {MY_TABLE} table")
-    #     cursor.commit()
-    #     cursor.close()
-    #     conn.close()
+            print(
+                "average number of passengers between two dates: ",
+                round(records[0][0], 4),
+            )
+        except:
+            self.close_connection(conn, cursor)
+        finally:
+            self.close_connection(conn, cursor)
