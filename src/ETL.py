@@ -1,16 +1,30 @@
-from logging import DEBUG
+import logging
 import os
 from azure.storage.blob import (
     BlobServiceClient,
     __version__,
 )
 from dotenv import load_dotenv
-from src.helper_functions import logger_setup
 from src.data_processing import Data_processing
 
 load_dotenv()
 
-logger = logger_setup(log_name="ETL.log")
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter(
+    "%(asctime)s:%(levelname)s:%(name)s:%(funcName)s:%(message)s"
+)
+
+file_handler = logging.FileHandler("logs/ETL.log", "w")
+file_handler.setLevel(logging.logging.ERROR)
+file_handler.setFormatter(formatter)
+
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
+logger.addHandler(stream_handler)
 
 
 class ETL:

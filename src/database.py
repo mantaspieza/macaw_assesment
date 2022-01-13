@@ -5,12 +5,25 @@ import pyodbc
 import pandas as pd
 import logging
 
-from src.helper_functions import logger_setup
 
-logger = logger_setup("database_interactions.log")
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter(
+    "%(asctime)s:%(levelname)s:%(name)s:%(funcName)s:%(message)s"
+)
+
+file_handler = logging.FileHandler("logs/database_interactions.log", "w")
+file_handler.setLevel(logging.logging.ERROR)
+file_handler.setFormatter(formatter)
+
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
+logger.addHandler(stream_handler)
 
 
-class database_interactions:
+class Database_interactions:
     def __init__(self) -> None:
         self.driver = "{ODBC Driver 17 for SQL Server}"
         self.servername = "yellowtaxidata"
@@ -87,9 +100,10 @@ class database_interactions:
             logger.info(f"table {self.table_name} was created correctly")
 
     def truncate_table(self):
+
+        conn, cursor = self.create_connection()
+        logger.debug("connection was succesful before truncating table")
         try:
-            conn, cursor = self.create_connection()
-            logger.debug("connection was succesful before truncating table")
             sql_code = f"TRUNCATE TABLE {self.table_name}"
 
             cursor.execute(sql_code)
@@ -108,11 +122,11 @@ class database_interactions:
             logger.info(f"{self.table_name} was successfully truncated")
 
     def insert_transformed_data_to_sql_db(self) -> None:
-        try:
-            conn, cursor = self.create_connection()
-            logger.debug("connection inserting data to sql was successful")
-            cursor.fast_executemany = True
 
+        conn, cursor = self.create_connection()
+        logger.debug("connection inserting data to sql was successful")
+        cursor.fast_executemany = True
+        try:
             dirListing = os.listdir("data/extracted_from_azure_transformed/")
             logger.debug("directory path described correctly")
 
@@ -169,10 +183,10 @@ class database_interactions:
     def get_average_passenger_count_between_two_dates(
         self, start_datetime_of_period: str, end_datetime_of_period: str
     ):
-        try:
-            conn, cursor = self.create_connection()
-            logger.debug("connection was successfull to sql database")
 
+        conn, cursor = self.create_connection()
+        logger.debug("connection was successfull to sql database")
+        try:
             sql_code = f"""SELECT avg(cast(passenger_count as float)) 
                             FROM {self.table_name} AS a 
                                 WHERE a.pickup_datetime >= '{start_datetime_of_period}' 

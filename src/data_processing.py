@@ -2,9 +2,22 @@ import pandas as pd
 from pandas.core.frame import DataFrame
 import logging
 
-from src.helper_functions import logger_setup
 
-logger = logger_setup(log_name="data_processing.log")
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter(
+    "%(asctime)s:%(levelname)s:%(name)s:%(funcName)s:%(message)s"
+)
+
+file_handler = logging.FileHandler("logs/data_processing.log", "w")
+file_handler.setLevel(logging.logging.ERROR)
+file_handler.setFormatter(formatter)
+
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
+logger.addHandler(stream_handler)
 
 
 class Data_processing:
