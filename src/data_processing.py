@@ -252,7 +252,6 @@ class Data_processing:
                 dataframe = self.rename_columns(dataframe)
                 dataframe = self.remove_outliers(dataframe, month)
                 dataframe = self.remove_extremely_short_and_long_rides(dataframe)
-                # dataframe = self.correct_datetime_strings_for_database_input(dataframe)
                 self.save_cleaned_csv_file(month, dataframe)
                 logger.info(
                     f"{self.year}-{month} dataframe was successfully cleaned and saved"

@@ -100,16 +100,15 @@ class Database_interactions:
         """
 
         try:
-            if connection.is_connected():
-                logger.debug("connection is stable")
-                cursor.close()
-                logger.debug("cursor was closed")
-                connection.close()
-                logger.debug("connection was terminated")
+            logger.debug("connection is stable")
+            cursor.close()
+            logger.debug("cursor was closed")
+            connection.close()
+            logger.debug("connection was terminated")
         except:
             logger.exception("it was imposible to close connection check if it is open")
         else:
-            logger.info("Connection was closed successfully")
+            logger.info("The connection was not open")
 
     def create_table(self):
         """
@@ -214,7 +213,13 @@ class Database_interactions:
                 "there is connection or value problem inserting transformed data to sql"
             )
         else:
-            logger.info("all dataframes were successfully moved to azure sql database")
+            dir = "data/extracted_from_azure_transformed"
+            for file in os.listdir(dir):
+                os.remove(os.path.join(dir, file))
+
+            logger.info(
+                "all dataframes were successfully moved to azure sql database and extracted transformed data removed from local file"
+            )
 
     def get_average_passenger_count_between_two_dates(
         self, start_datetime_of_period: str, end_datetime_of_period: str

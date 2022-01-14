@@ -7,6 +7,7 @@ from azure.storage.blob import (
 from dotenv import load_dotenv
 from src.data_processing import Data_processing
 
+
 load_dotenv()
 
 
@@ -120,7 +121,7 @@ class ETL:
                 # uploads data to azure
                 upload_file_path = os.path.join(raw_data_file_path, temp_filename)
                 with open(upload_file_path, "rb") as data:
-                    blob_client.upload_blob(data)
+                    blob_client.upload_blob(data, overwrite=True)
 
                 logger.debug(
                     f"master, problem uploading {temp_filename} to container {container_name}"
@@ -241,10 +242,11 @@ class ETL:
             try:
                 self.blob_service_client.create_container(container_name)
                 logger.debug(f"container {container_name} created successfully")
-            except ConnectionRefusedError:
-                logger.warning("container already exists, container client received")
+            except:
+                logger.info("container already exists, container client received")
             else:
                 self.blob_service_client.get_container_client(container_name)
+
             raw_data_file_path = "data/transformed_data"
             months = [str(i).zfill(2) for i in range(start_month, end_month + 1)]
 
@@ -268,7 +270,7 @@ class ETL:
                 )
         except ConnectionError or ValueError:
             logger.exception(
-                f"there is problem uploading transformed data to azure blob storage"
+                f" there is problem uploading transformed data to azure blob storage "
             )
         else:
             # removes files after upload is compleated.
