@@ -17,7 +17,7 @@ formatter = logging.Formatter(
 )
 
 file_handler = logging.FileHandler("logs/ETL.log", "w")
-file_handler.setLevel(logging.ERROR)
+file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(formatter)
 
 stream_handler = logging.StreamHandler()
@@ -124,10 +124,17 @@ class ETL:
                 logger.info(
                     f"{temp_filename} was succesfully moved to {container_name}"
                 )
+
         except ConnectionRefusedError:
             logger.exception("there was a problem with connection or path provided")
         else:
-            logger.info("Raw data was successfully transfered.")
+            # removes files after upload is compleated.
+            dir = "data/raw_data"
+            for file in os.listdir(dir):
+                os.remove(os.path.join(dir, file))
+            logger.info(
+                "Raw data was successfully transfered and deleted from data/raw folder."
+            )
 
     def extract_single_taxi_blob(
         self, file_name: str, file_content, local_blob_path: str
@@ -204,7 +211,13 @@ class ETL:
                 "tere is definitely a PROBLEM in data processing -> check LOG!"
             )
         else:
-            logger.info("All files were successfuly transformed.")
+            # removes files after transformation is complete is compleated.
+            dir = "data/extracted_from_azure_raw"
+            for file in os.listdir(dir):
+                os.remove(os.path.join(dir, file))
+            logger.info(
+                "All files were successfuly transformed and extracted raw data removed."
+            )
 
     def upload_transformed_data_to_azure(
         self, start_month: int, end_month: int, year: int
@@ -254,8 +267,13 @@ class ETL:
                 f"there is problem uploading transformed data to azure blob storage"
             )
         else:
+            # removes files after upload is compleated.
+            dir = "data/transformed_data"
+            for file in os.listdir(dir):
+                os.remove(os.path.join(dir, file))
+
             logger.info(
-                "ALL files were SUCCESSFULLY moved to transformed azure blob storage"
+                "ALL files were SUCCESSFULLY moved to transformed azure blob storage and removed from transformed_data folder."
             )
 
     def extract_transformed_taxi_data_from_azure(self):
