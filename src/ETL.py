@@ -30,7 +30,7 @@ logger.addHandler(stream_handler)
 
 class ETL:
     """
-    Takes raw data from raw_data folder, applies cleans and applies transformations and saves it to transformed_data folder.
+    Takes raw data from raw_data folder, cleans and applies transformations and saves it to transformed_data folder.
 
     ::Parameters::
     :: None
