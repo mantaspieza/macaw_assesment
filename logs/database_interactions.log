@@ -1,27 +1,36 @@
-2022-01-14 06:39:44,744:INFO:src.database:create_connection:successfuly connected to database
-2022-01-14 06:39:44,837:ERROR:src.database:create_table:there was an issue creating the table check if sql code is corect
+2022-01-14 07:48:02,108:INFO:src.database:create_connection:successfuly connected to database
+2022-01-14 07:48:02,207:ERROR:src.database:create_table:there was an issue creating the table check if sql code is corect
 Traceback (most recent call last):
   File "/Users/mantas/PycharmProjects/makaw_assesment/makaw_assesment/src/database.py", line 134, in create_table
     cursor.execute(sql_code)
 pyodbc.ProgrammingError: ('42S01', "[42S01] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]There is already an object named 'yellow_taxi_info_2021' in the database. (2714) (SQLExecDirectW)")
-2022-01-14 06:39:45,279:INFO:src.database:create_connection:successfuly connected to database
-2022-01-14 06:41:44,559:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-01successfuly commited to azure sql database
-2022-01-14 06:43:57,023:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-02successfuly commited to azure sql database
-2022-01-14 06:46:47,765:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-03successfuly commited to azure sql database
-2022-01-14 06:49:57,553:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-04successfuly commited to azure sql database
-2022-01-14 06:52:32,471:ERROR:src.database:insert_transformed_data_to_sql_db:there is connection or value problem inserting transformed data to sql
+2022-01-14 07:48:02,688:INFO:src.database:create_connection:successfuly connected to database
+2022-01-14 07:48:02,800:ERROR:src.database:close_connection:it was imposible to close connection check if it is open
 Traceback (most recent call last):
-  File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/encodings/utf_16_le.py", line 15, in decode
-    def decode(input, errors='strict'):
-KeyboardInterrupt
-
-The above exception was the direct cause of the following exception:
-
-KeyboardInterrupt: decoding with 'utf-16le' codec failed (KeyboardInterrupt: )
-
-The above exception was the direct cause of the following exception:
-
+  File "/Users/mantas/PycharmProjects/makaw_assesment/makaw_assesment/src/database.py", line 103, in close_connection
+    if connection.is_connected():
+AttributeError: 'pyodbc.Connection' object has no attribute 'is_connected'
+2022-01-14 07:48:02,801:INFO:src.database:truncate_table:yellow_taxi_info_2021 was successfully truncated
+2022-01-14 07:48:03,275:INFO:src.database:create_connection:successfuly connected to database
+2022-01-14 07:50:02,746:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-01successfuly commited to azure sql database
+2022-01-14 07:52:01,633:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-02successfuly commited to azure sql database
+2022-01-14 07:54:48,851:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-03successfuly commited to azure sql database
+2022-01-14 07:58:01,774:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-04successfuly commited to azure sql database
+2022-01-14 08:01:55,248:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-05successfuly commited to azure sql database
+2022-01-14 08:06:17,490:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-06successfuly commited to azure sql database
+2022-01-14 08:10:32,884:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-07successfuly commited to azure sql database
+2022-01-14 08:10:32,889:ERROR:src.database:close_connection:it was imposible to close connection check if it is open
 Traceback (most recent call last):
-  File "/Users/mantas/PycharmProjects/makaw_assesment/makaw_assesment/src/database.py", line 199, in insert_transformed_data_to_sql_db
-    cursor.executemany(sql_code, df.values.tolist())
-SystemError: <class 'pyodbc.Error'> returned a result with an error set
+  File "/Users/mantas/PycharmProjects/makaw_assesment/makaw_assesment/src/database.py", line 103, in close_connection
+    logger.debug("connection is stable")
+AttributeError: 'pyodbc.Connection' object has no attribute 'is_connected'
+2022-01-14 08:10:32,903:INFO:src.database:insert_transformed_data_to_sql_db:all dataframes were successfully moved to azure sql database
+2022-01-14 08:10:34,734:INFO:src.database:create_connection:successfuly connected to database
+2022-01-14 08:11:07,395:INFO:src.database:get_average_passenger_count_between_two_dates:sql code executed successfully to retreive average customer number in time period
+2022-01-14 08:11:07,398:ERROR:src.database:close_connection:it was imposible to close connection check if it is open
+Traceback (most recent call last):
+  File "/Users/mantas/PycharmProjects/makaw_assesment/makaw_assesment/src/database.py", line 103, in close_connection
+    logger.debug("connection is stable")
+AttributeError: 'pyodbc.Connection' object has no attribute 'is_connected'
+2022-01-14 08:11:07,404:INFO:src.database:get_average_passenger_count_between_two_dates:connection was closed successfully
+2022-01-14 08:11:07,408:INFO:src.database:get_average_passenger_count_between_two_dates:average customer number in defined perdiod is 1.422639808921843

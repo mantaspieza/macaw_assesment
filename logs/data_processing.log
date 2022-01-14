@@ -1,15 +1,15 @@
-2022-01-14 06:35:36,644:INFO:src.data_processing:run:2021-01 dataframe was successfully read in
-2022-01-14 06:35:45,966:INFO:src.data_processing:run:2021-01 dataframe was successfully cleaned and saved
-2022-01-14 06:35:49,157:INFO:src.data_processing:run:2021-02 dataframe was successfully read in
-2022-01-14 06:35:58,178:INFO:src.data_processing:run:2021-02 dataframe was successfully cleaned and saved
-2022-01-14 06:36:02,967:INFO:src.data_processing:run:2021-03 dataframe was successfully read in
-2022-01-14 06:36:15,495:INFO:src.data_processing:run:2021-03 dataframe was successfully cleaned and saved
-2022-01-14 06:36:20,355:INFO:src.data_processing:run:2021-04 dataframe was successfully read in
-2022-01-14 06:36:34,293:INFO:src.data_processing:run:2021-04 dataframe was successfully cleaned and saved
-2022-01-14 06:36:39,839:INFO:src.data_processing:run:2021-05 dataframe was successfully read in
-2022-01-14 06:36:56,372:INFO:src.data_processing:run:2021-05 dataframe was successfully cleaned and saved
-2022-01-14 06:37:03,254:INFO:src.data_processing:run:2021-06 dataframe was successfully read in
-2022-01-14 06:37:21,936:INFO:src.data_processing:run:2021-06 dataframe was successfully cleaned and saved
-2022-01-14 06:37:28,104:INFO:src.data_processing:run:2021-07 dataframe was successfully read in
-2022-01-14 06:37:46,677:INFO:src.data_processing:run:2021-07 dataframe was successfully cleaned and saved
-2022-01-14 06:37:46,678:INFO:src.data_processing:run:ALL dataframes were successfuly transformed and saved. Congratz
+2022-01-14 07:42:11,184:INFO:src.data_processing:run:2021-01 dataframe was successfully read in
+2022-01-14 07:42:22,648:INFO:src.data_processing:run:2021-01 dataframe was successfully cleaned and saved
+2022-01-14 07:42:29,108:INFO:src.data_processing:run:2021-02 dataframe was successfully read in
+2022-01-14 07:42:40,662:INFO:src.data_processing:run:2021-02 dataframe was successfully cleaned and saved
+2022-01-14 07:42:46,831:INFO:src.data_processing:run:2021-03 dataframe was successfully read in
+2022-01-14 07:43:05,291:INFO:src.data_processing:run:2021-03 dataframe was successfully cleaned and saved
+2022-01-14 07:43:12,781:INFO:src.data_processing:run:2021-04 dataframe was successfully read in
+2022-01-14 07:43:33,334:INFO:src.data_processing:run:2021-04 dataframe was successfully cleaned and saved
+2022-01-14 07:43:41,290:INFO:src.data_processing:run:2021-05 dataframe was successfully read in
+2022-01-14 07:43:59,724:INFO:src.data_processing:run:2021-05 dataframe was successfully cleaned and saved
+2022-01-14 07:44:07,158:INFO:src.data_processing:run:2021-06 dataframe was successfully read in
+2022-01-14 07:44:27,829:INFO:src.data_processing:run:2021-06 dataframe was successfully cleaned and saved
+2022-01-14 07:44:35,387:INFO:src.data_processing:run:2021-07 dataframe was successfully read in
+2022-01-14 07:44:56,210:INFO:src.data_processing:run:2021-07 dataframe was successfully cleaned and saved
+2022-01-14 07:44:56,211:INFO:src.data_processing:run:ALL dataframes were successfuly transformed and saved. Congratz
