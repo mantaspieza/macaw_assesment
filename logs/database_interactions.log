@@ -1,0 +1,27 @@
+2022-01-14 06:39:44,744:INFO:src.database:create_connection:successfuly connected to database
+2022-01-14 06:39:44,837:ERROR:src.database:create_table:there was an issue creating the table check if sql code is corect
+Traceback (most recent call last):
+  File "/Users/mantas/PycharmProjects/makaw_assesment/makaw_assesment/src/database.py", line 134, in create_table
+    cursor.execute(sql_code)
+pyodbc.ProgrammingError: ('42S01', "[42S01] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]There is already an object named 'yellow_taxi_info_2021' in the database. (2714) (SQLExecDirectW)")
+2022-01-14 06:39:45,279:INFO:src.database:create_connection:successfuly connected to database
+2022-01-14 06:41:44,559:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-01successfuly commited to azure sql database
+2022-01-14 06:43:57,023:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-02successfuly commited to azure sql database
+2022-01-14 06:46:47,765:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-03successfuly commited to azure sql database
+2022-01-14 06:49:57,553:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-04successfuly commited to azure sql database
+2022-01-14 06:52:32,471:ERROR:src.database:insert_transformed_data_to_sql_db:there is connection or value problem inserting transformed data to sql
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/encodings/utf_16_le.py", line 15, in decode
+    def decode(input, errors='strict'):
+KeyboardInterrupt
+
+The above exception was the direct cause of the following exception:
+
+KeyboardInterrupt: decoding with 'utf-16le' codec failed (KeyboardInterrupt: )
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/mantas/PycharmProjects/makaw_assesment/makaw_assesment/src/database.py", line 199, in insert_transformed_data_to_sql_db
+    cursor.executemany(sql_code, df.values.tolist())
+SystemError: <class 'pyodbc.Error'> returned a result with an error set

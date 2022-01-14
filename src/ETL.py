@@ -99,9 +99,13 @@ class ETL:
             try:
                 self.blob_service_client.create_container(container_name)
                 logger.debug("container created successfully")
-            except ConnectionRefusedError:
+
+            except:
+                logger.info("Table was already created!")
+            else:
                 self.blob_service_client.get_container_client(container_name)
-                logger.warning("container already exists, container client received")
+                logger.info("container existed, client will be retrieved")
+
             raw_data_file_path = "data/raw_data"
             months = [str(i).zfill(2) for i in range(start_month, end_month + 1)]
 
@@ -238,9 +242,9 @@ class ETL:
                 self.blob_service_client.create_container(container_name)
                 logger.debug(f"container {container_name} created successfully")
             except ConnectionRefusedError:
-                self.blob_service_client.get_container_client(container_name)
                 logger.warning("container already exists, container client received")
-
+            else:
+                self.blob_service_client.get_container_client(container_name)
             raw_data_file_path = "data/transformed_data"
             months = [str(i).zfill(2) for i in range(start_month, end_month + 1)]
 

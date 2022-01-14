@@ -74,8 +74,10 @@ class Perform_the_assesment_task:
                 database_interactions.create_table()
                 logger.info(">> SQL TABLE CREATED <<<")
             except:
+                logger.info(">>> SQL TABLE WILL BE CLEARED <<<")
+            else:
                 database_interactions.truncate_table()
-                logger.info(">>> SQL TABLE CLEARED <<<")
+                logger.info(">>> SQL TABLE WAS CLEARED")
             database_interactions.insert_transformed_data_to_sql_db()
             logger.info(">>> ALL TRANSFORMED DATA MOVED TO SQL DATABASE <<<")
 
