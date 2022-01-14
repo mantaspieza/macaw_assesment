@@ -33,7 +33,7 @@ class Data_processing:
 
     :: Functions ::
 
-    :: remove_negative_passenger_count: -> removes rows where passenger count < 0
+    :: remove_negative_passenger_count: -> removes rows where passenger count >= 0
     :: rename_columns   : -> renames columns to more convenient naming
     :: read_csv_file    : -> reads the csv file
     :: remove_outliers  : -> removes dates that are not in range of the month the dataset is built.

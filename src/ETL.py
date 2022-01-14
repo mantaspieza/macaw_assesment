@@ -41,7 +41,7 @@ class ETL:
     :Azure_storage_connection_string :
 
     :: Functions ::
-    :: delete_container         : -> deletes container with predefined name in function
+
     :: upload_raw_data_to_azure : -> stores raw taxi data from raw_data folder to azure blob storage
     :: extract_singe_blob       : -> extracts single blob from azure blob storage (used for batch extractions)
     :: extract_raw_taxi_data_from_azure: -> extracts all raw taxi data from azure
@@ -49,7 +49,7 @@ class ETL:
     :: upload_transformed_data_to_azure: -> uploads transformed data to azure blob storage
     :: extract_transformed_data_from_azure: -> extracts all transformed data from azure blob storage
     :: delete blob              : -> deletes blob from azure blob storage
-
+    :: delete_container         : -> deletes container with predefined name in function
 
     return:: None
 
@@ -216,7 +216,7 @@ class ETL:
                 "tere is definitely a PROBLEM in data processing -> check LOG!"
             )
         else:
-            # removes files after transformation is complete is compleated.
+            # removes files after transformation is compleated.
             dir = "data/extracted_from_azure_raw"
             for file in os.listdir(dir):
                 os.remove(os.path.join(dir, file))
