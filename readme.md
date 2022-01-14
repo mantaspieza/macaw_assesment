@@ -4,7 +4,7 @@
 
 Yellow taxi data is downloaded from the site and uploaded to data/raw_data folder.
 
-Only available data for 2021 is used. ~13.7M rows.
+Only available data for 2021 is used. ~13.5M rows.
 
 #### Pipeline
 
@@ -15,7 +15,7 @@ Only available data for 2021 is used. ~13.7M rows.
 - transformed data uploaded to azure blob server and removed from local folder
 - transformed data downloaded from azure blob server
 - table in sql database created / cleared if exists
-- transformed data is uploaded to sql database table
+- transformed data is uploaded to sql database table. removed from local file
 - querry formulated to retreive average passenger count between two dates
 
 #### Logs are available to see how the pipeline works.

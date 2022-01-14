@@ -1,36 +1,24 @@
-2022-01-14 07:48:02,108:INFO:src.database:create_connection:successfuly connected to database
-2022-01-14 07:48:02,207:ERROR:src.database:create_table:there was an issue creating the table check if sql code is corect
+2022-01-14 09:36:54,493:INFO:src.database:create_connection:successfuly connected to database
+2022-01-14 09:36:54,595:ERROR:src.database:create_table:there was an issue creating the table check if sql code is corect
 Traceback (most recent call last):
-  File "/Users/mantas/PycharmProjects/makaw_assesment/makaw_assesment/src/database.py", line 134, in create_table
+  File "/Users/mantas/PycharmProjects/makaw_assesment/makaw_assesment/src/database.py", line 133, in create_table
     cursor.execute(sql_code)
 pyodbc.ProgrammingError: ('42S01', "[42S01] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]There is already an object named 'yellow_taxi_info_2021' in the database. (2714) (SQLExecDirectW)")
-2022-01-14 07:48:02,688:INFO:src.database:create_connection:successfuly connected to database
-2022-01-14 07:48:02,800:ERROR:src.database:close_connection:it was imposible to close connection check if it is open
-Traceback (most recent call last):
-  File "/Users/mantas/PycharmProjects/makaw_assesment/makaw_assesment/src/database.py", line 103, in close_connection
-    if connection.is_connected():
-AttributeError: 'pyodbc.Connection' object has no attribute 'is_connected'
-2022-01-14 07:48:02,801:INFO:src.database:truncate_table:yellow_taxi_info_2021 was successfully truncated
-2022-01-14 07:48:03,275:INFO:src.database:create_connection:successfuly connected to database
-2022-01-14 07:50:02,746:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-01successfuly commited to azure sql database
-2022-01-14 07:52:01,633:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-02successfuly commited to azure sql database
-2022-01-14 07:54:48,851:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-03successfuly commited to azure sql database
-2022-01-14 07:58:01,774:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-04successfuly commited to azure sql database
-2022-01-14 08:01:55,248:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-05successfuly commited to azure sql database
-2022-01-14 08:06:17,490:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-06successfuly commited to azure sql database
-2022-01-14 08:10:32,884:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-07successfuly commited to azure sql database
-2022-01-14 08:10:32,889:ERROR:src.database:close_connection:it was imposible to close connection check if it is open
-Traceback (most recent call last):
-  File "/Users/mantas/PycharmProjects/makaw_assesment/makaw_assesment/src/database.py", line 103, in close_connection
-    logger.debug("connection is stable")
-AttributeError: 'pyodbc.Connection' object has no attribute 'is_connected'
-2022-01-14 08:10:32,903:INFO:src.database:insert_transformed_data_to_sql_db:all dataframes were successfully moved to azure sql database
-2022-01-14 08:10:34,734:INFO:src.database:create_connection:successfuly connected to database
-2022-01-14 08:11:07,395:INFO:src.database:get_average_passenger_count_between_two_dates:sql code executed successfully to retreive average customer number in time period
-2022-01-14 08:11:07,398:ERROR:src.database:close_connection:it was imposible to close connection check if it is open
-Traceback (most recent call last):
-  File "/Users/mantas/PycharmProjects/makaw_assesment/makaw_assesment/src/database.py", line 103, in close_connection
-    logger.debug("connection is stable")
-AttributeError: 'pyodbc.Connection' object has no attribute 'is_connected'
-2022-01-14 08:11:07,404:INFO:src.database:get_average_passenger_count_between_two_dates:connection was closed successfully
-2022-01-14 08:11:07,408:INFO:src.database:get_average_passenger_count_between_two_dates:average customer number in defined perdiod is 1.422639808921843
+2022-01-14 09:36:55,081:INFO:src.database:create_connection:successfuly connected to database
+2022-01-14 09:36:55,198:INFO:src.database:close_connection:The connection was not open
+2022-01-14 09:36:55,199:INFO:src.database:truncate_table:yellow_taxi_info_2021 was successfully truncated
+2022-01-14 09:36:55,682:INFO:src.database:create_connection:successfuly connected to database
+2022-01-14 09:38:58,266:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-01successfuly commited to azure sql database
+2022-01-14 09:41:03,504:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-02successfuly commited to azure sql database
+2022-01-14 09:43:52,419:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-03successfuly commited to azure sql database
+2022-01-14 09:47:04,770:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-04successfuly commited to azure sql database
+2022-01-14 09:50:59,880:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-05successfuly commited to azure sql database
+2022-01-14 09:55:24,929:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-06successfuly commited to azure sql database
+2022-01-14 09:59:50,323:INFO:src.database:insert_transformed_data_to_sql_db:dataframe 2021-07successfuly commited to azure sql database
+2022-01-14 09:59:50,424:INFO:src.database:close_connection:The connection was not open
+2022-01-14 09:59:50,535:INFO:src.database:insert_transformed_data_to_sql_db:all dataframes were successfully moved to azure sql database and extracted transformed data removed from local file
+2022-01-14 09:59:53,906:INFO:src.database:create_connection:successfuly connected to database
+2022-01-14 10:00:26,603:INFO:src.database:get_average_passenger_count_between_two_dates:sql code executed successfully to retreive average customer number in time period
+2022-01-14 10:00:26,748:INFO:src.database:close_connection:The connection was not open
+2022-01-14 10:00:26,749:INFO:src.database:get_average_passenger_count_between_two_dates:connection was closed successfully
+2022-01-14 10:00:26,751:INFO:src.database:get_average_passenger_count_between_two_dates:average customer number in defined perdiod is 1.422639808921843
