@@ -21,6 +21,30 @@ logger.addHandler(stream_handler)
 
 
 class Data_processing:
+    """
+
+    Class which performs transformations using raw data.
+
+    ::Parameters::
+
+    :: start_month_of_reports : first month for the csv file in raw data (currently 1)
+    : end_month_of_report    : last month of the csv file of 2021 (currently 7)
+    : year                   : year of the data used
+
+    :: Functions ::
+
+    :: remove_negative_passenger_count: -> removes rows where passenger count < 0
+    :: rename_columns   : -> renames columns to more convenient naming
+    :: read_csv_file    : -> reads the csv file
+    :: remove_outliers  : -> removes dates that are not in range of the month the dataset is built.
+    :: remove_extremely_short_and_long_rides : -> removes rides where duration is less than 5 seconds and longer than 12hour shift.
+    :: save_cleaned_csv_files: -> saves transformed dataframe
+    :: run : -> general functionto combine it all
+
+
+
+    """
+
     def __init__(
         self, start_month_of_report: int, end_month_of_report: int, year: int
     ) -> None:
@@ -41,6 +65,12 @@ class Data_processing:
     def remove_negative_passenger_count(
         self, temp_dataframe: pd.DataFrame
     ) -> pd.DataFrame:
+        """
+        Removes rows with negative passenger count.
+        param: temp_dataframe -> pandas dataframe of the month the data needs to be adjusted.
+
+        return:: temp_dataframe -> pandas dataframe with sorted values.
+        """
         try:
             temp_dataframe = temp_dataframe[temp_dataframe.passenger_count >= 0]
         except ValueError:
@@ -53,7 +83,12 @@ class Data_processing:
         return temp_dataframe
 
     def rename_columns(self, temp_dataframe: pd.DataFrame) -> pd.DataFrame:
+        """
+        Renames columns. removes "tpep" from the begining of the column name.
+        param: temp_dataframe -> pandas dataframe holding correct values.
 
+        return:: temp_dataframe -> pandas dataframe with renamed columns.
+        """
         try:
             new_temp_dataframe = temp_dataframe.rename(
                 columns={
@@ -68,6 +103,13 @@ class Data_processing:
         return new_temp_dataframe
 
     def read_csv_file(self, month: str) -> pd.DataFrame:
+        """
+        Reads the raw csv files and prepares them for cleaning. parses dates, selects only columns required (picup/dropoff datetime and passenger count)
+
+        param: month:str -> value of the month provided in two digits format eg. 01,02
+
+        returns temp_dataframe -> pandas dataframe with selected columns.
+        """
         try:
             temp_dataframe = pd.read_csv(
                 f"data/extracted_from_azure_raw/yellow_tripdata_{self.year}-{month}.csv",
@@ -85,7 +127,14 @@ class Data_processing:
         return temp_dataframe
 
     def remove_outliers(self, temp_dataframe: pd.DataFrame, month: str) -> pd.DataFrame:
+        """
+        Removes monthly outliers. Checks whether the dates in pickup_datetime column are within the specific month.
 
+        param: temo_dataframe -> pandas dataframe
+        param: month -> str representation of the month in two digits. eg. 01, 02
+
+        return:: pandas dataframe
+        """
         try:
             if int(month) == 2:
                 temp_dataframe = temp_dataframe[
@@ -133,7 +182,13 @@ class Data_processing:
         return temp_dataframe
 
     def remove_extremely_short_and_long_rides(self, temp_dataframe: pd.DataFrame):
+        """
+        Removes trips which are shorter than 5 seconds and longer than 12hours (as its the typical shift for a driver)
 
+        param: temp_dataframe -> pandas dataframe
+
+        return: pandas dataframe
+        """
         try:
             trip_duration_in_seconds = (
                 (temp_dataframe.dropoff_datetime - temp_dataframe.pickup_datetime)
@@ -160,8 +215,15 @@ class Data_processing:
             logger.debug("Trip duration outliers successfuly removed")
         return temp_dataframe
 
-    def save_cleaned_csv_file(self, month, dataframe: pd.DataFrame):
+    def save_cleaned_csv_file(self, month, dataframe: pd.DataFrame) -> None:
+        """
+        Saves cleaned and transformed dataframe to transformed dataframe folder
 
+        param: month -> two digit str representation of a month, eg. 01, 02
+        param: dataframe -> pandas dataframe
+
+        return:: None
+        """
         try:
             dataframe.to_csv(
                 f"data/transformed_data/clean_yellow_trip_data_{self.year}-"
@@ -175,6 +237,13 @@ class Data_processing:
             logger.debug(f"{dataframe} was saved successfully")
 
     def run(self):
+        """
+        Function which iterates from start to end month applying all functions of the class.
+
+        param: None
+
+        return:: None
+        """
         try:
             for month in self.months:
                 dataframe = self.read_csv_file(month=month)

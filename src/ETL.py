@@ -29,10 +29,29 @@ logger.addHandler(stream_handler)
 
 class ETL:
     """
-    Takes yellow taxi dat from local storage (As i have no SSH to take it directly from page),
-     uploads raw data to azure blob,
-      extracts raw data from azure blob,
-       cleans it and uploads cleaned back to blob
+    Takes raw data from raw_data folder, applies cleans and applies transformations and saves it to transformed_data folder.
+
+    ::Parameters::
+    :: None
+
+    :: IMPORTANT::
+    : It is required to have access to azure servers.
+    :: Requirements ::
+    :Azure_storage_connection_string :
+
+    :: Functions ::
+    :: delete_container         : -> deletes container with predefined name in function
+    :: upload_raw_data_to_azure : -> stores raw taxi data from raw_data folder to azure blob storage
+    :: extract_singe_blob       : -> extracts single blob from azure blob storage (used for batch extractions)
+    :: extract_raw_taxi_data_from_azure: -> extracts all raw taxi data from azure
+    :: transform_raw_data       : -> transforms raw data using Data_processing class
+    :: upload_transformed_data_to_azure: -> uploads transformed data to azure blob storage
+    :: extract_transformed_data_from_azure: -> extracts all transformed data from azure blob storage
+    :: delete blob              : -> deletes blob from azure blob storage
+
+
+    return:: None
+
     """
 
     def __init__(self) -> None:
@@ -41,14 +60,49 @@ class ETL:
             self.connection
         )
 
+    def delete_container(self, container_name: str):
+        """
+        Deletes container from azure blob storage.
+
+        param: container_name:-> name of the container in azure blobs storage
+
+        return:: None
+        """
+        try:
+            my_container = self.blob_service_client.get_container_client(
+                container=container_name
+            )
+            logger.debug(f"successfully connected to {container_name}")
+            my_container.delete_container()
+            logger.debug("container successfully deleted")
+        except ConnectionError or ValueError:
+            logger.exception(
+                "the container {container_name} was NOT deleted. check the code."
+            )
+        else:
+            logger.info("Container {container_name} was successfuly deleted")
+
     def upload_raw_data_to_azure(
         self, start_month: int, end_month: int, year: str = "2021"
     ):
+        """
+        Uploads raw data from local raw_data folder to azure blob storage.
+
+        param: start_month:-> first month of dataset (tipically 1)
+        param: end_month:-> last month of dataset (tipically 12) in this case 7
+        param: year:-> str value set to 2021
+
+        return:: None
+        """
         try:
             container_name = "raw-yellow-taxi-data"
-            self.blob_service_client.create_container(container_name)
-            logger.debug("container created successfully")
-            raw_data_file_path = "./data/raw_data"
+            try:
+                self.blob_service_client.create_container(container_name)
+                logger.debug("container created successfully")
+            except ConnectionRefusedError:
+                self.blob_service_client.get_container_client(container_name)
+                logger.warning("container already exists, container client received")
+            raw_data_file_path = "data/raw_data"
             months = [str(i).zfill(2) for i in range(start_month, end_month + 1)]
 
             for month in months:
@@ -78,6 +132,14 @@ class ETL:
     def extract_single_taxi_blob(
         self, file_name: str, file_content, local_blob_path: str
     ):
+        """
+        writes single blob from azure blob storage. used in other functions for bulk extraction.
+
+        :param file_name:-> title of the csv file to retreive.
+        :param local_blob_path:-> path to the blob on the device.
+
+        return:: None
+        """
         try:
             download_file_path = os.path.join(local_blob_path, file_name)
 
@@ -90,6 +152,12 @@ class ETL:
             )
 
     def extract_raw_taxi_data_from_azure(self):
+        """
+        Extracts all raw taxi data from azure blob storage.
+
+        :param: None
+        return: None
+        """
         try:
             my_container = self.blob_service_client.get_container_client(
                 "raw-yellow-taxi-data"
@@ -116,6 +184,16 @@ class ETL:
             )
 
     def transform_raw_data(self, start_month: int, end_month: int, year: int):
+        """
+        Transforms data using Data_processing class.
+
+        :param start_month:-> first month (int 1/2/3 etc.) to start transformations.
+        :param end_month:-> last month (int (1/2/3/ etc)) to end transformations.
+        :param year:-> year (int) of datasets to be used.
+
+        return:: None
+        """
+
         try:
             data_processing = Data_processing(start_month, end_month, year)
             logger.debug("data processing class loaded successfully")
@@ -131,6 +209,16 @@ class ETL:
     def upload_transformed_data_to_azure(
         self, start_month: int, end_month: int, year: int
     ):
+        """
+        Uploads transformed data from local transformed_data folder to azure blob storage
+
+        :param start_month:-> first month (int 1/2/3 etc.) to start transformations.
+        :param end_month:-> last month (int (1/2/3/ etc)) to end transformations.
+        :param year:-> year (int) of datasets to be used.
+
+        return:: None
+
+        """
         try:
             container_name = "transformed-yellow-taxi-data"
             try:
@@ -171,6 +259,13 @@ class ETL:
             )
 
     def extract_transformed_taxi_data_from_azure(self):
+        """
+        Extracts all transformed data from azure blob storage to local folder
+
+        :param: None
+
+        return:: None
+        """
         try:
             my_container = self.blob_service_client.get_container_client(
                 "transformed-yellow-taxi-data"
@@ -198,22 +293,13 @@ class ETL:
                 "ALL transformed taxi data files were SUCCESSFULLY moved from azure"
             )
 
-    def delete_container(self, container_name: str):
-        try:
-            my_container = self.blob_service_client.get_container_client(
-                container=container_name
-            )
-            logger.debug(f"successfully connected to {container_name}")
-            my_container.delete_container()
-            logger.debug("container successfully deleted")
-        except ConnectionError or ValueError:
-            logger.error(
-                "the container {container_name} was NOT deleted. check the code."
-            )
-        else:
-            logger.info("Container {container_name} was successfuly deleted")
-
     def delete_blob(self, container_name: str, blob_name: str):
+        """
+        Deletes single blob from azure blob storage.
+
+        :param: container_name:-> container name in blob storage as a string.
+        :param: blob_name:-> blob name as a string.
+        """
         try:
             my_container = self.blob_service_client.get_container_client(
                 container=container_name

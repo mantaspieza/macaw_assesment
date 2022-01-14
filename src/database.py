@@ -24,6 +24,27 @@ logger.addHandler(stream_handler)
 
 
 class Database_interactions:
+    """
+    Class which interacts with azure sql database
+
+    ::Requirements (hidden in env file)::
+    :: ODBC Driver 17
+    :: servername
+    :: database_name
+    :: table_name
+
+    ::Functions::
+    :: create_connection:-> creates connection to database
+    :: close_connection:-> closes connection to database
+    :: create_table:-> creates specific table for this task in sql database.
+    :: truncate_table:-> clears all values in the table if the table is created.
+    :: insert_transformed_data_to_sql_db: -> inserts transformed data to sql database in azure
+    :: get_average_passenger_count_between_two_dates:-> returns the average passenger count in specified time period.
+
+
+    return:: None
+    """
+
     def __init__(self) -> None:
         self.driver = "{ODBC Driver 17 for SQL Server}"
         self.servername = "yellowtaxidata"
@@ -48,6 +69,13 @@ class Database_interactions:
         )
 
     def create_connection(self) -> Tuple:
+        """
+        Creates connection to azure sql database.
+        :param: None
+
+        return:: connection, cursor
+        """
+
         try:
             connection = pyodbc.connect(self.connection_string)
             logger.debug("database connection established")
@@ -62,6 +90,15 @@ class Database_interactions:
         return connection, cursor
 
     def close_connection(self, connection: Any, cursor: Any) -> None:
+        """
+        Closes connection to sql database.
+
+        :param: connection:-> variable holdng connection to database (from function create_connection)
+        :param: cursor:-> variable holding cursor to sql database (from function create_connection)
+
+        return:: None
+        """
+
         try:
             if connection.is_connected():
                 logger.debug("connection is stable")
@@ -70,11 +107,19 @@ class Database_interactions:
                 connection.close()
                 logger.debug("connection was terminated")
         except:
-            logger.error("it was imposible to close connection check if it is open")
+            logger.exception("it was imposible to close connection check if it is open")
         else:
             logger.info("Connection was closed successfully")
 
     def create_table(self):
+        """
+        Creates table "yellow_taxi_info_2021" in azure sql database.
+
+        :Param:: None
+
+        return:: None
+        """
+
         try:
             conn, cursor = self.create_connection()
             logger.debug("connectio creating table was successfull")
@@ -93,14 +138,20 @@ class Database_interactions:
             self.close_connection(conn, cursor)
             logger.debug("connection was terminated succesfuly")
         except:
-            logger.error(
+            logger.exception(
                 "there was an issue creating the table check if sql code is corect"
             )
         else:
             logger.info(f"table {self.table_name} was created correctly")
 
     def truncate_table(self):
+        """
+        clears all existing values in azure sql database.
 
+        :param: None
+
+        return:: None
+        """
         conn, cursor = self.create_connection()
         logger.debug("connection was succesful before truncating table")
         try:
@@ -122,7 +173,13 @@ class Database_interactions:
             logger.info(f"{self.table_name} was successfully truncated")
 
     def insert_transformed_data_to_sql_db(self) -> None:
+        """
+        Inserts transformed data from local extracted_from_azure_transformed folder to azure sql datbase.
 
+        :param: None
+
+        return: None
+        """
         conn, cursor = self.create_connection()
         logger.debug("connection inserting data to sql was successful")
         cursor.fast_executemany = True
@@ -159,31 +216,17 @@ class Database_interactions:
         else:
             logger.info("all dataframes were successfully moved to azure sql database")
 
-    # def get_average_passenger_count_between_two_dates(
-    #     self, start_datetime_of_period: str, end_datetime_of_period: str
-    # ):
-    #     try:
-    #         conn, cursor = self.create_connection()
-    #         logger.debug('connected to database to get ')
-
-    #         sql_code = f"""SELECT avg(cast(passenger_count as float))
-    #                             from {self.table_name} as my_table
-    #                                 where
-    #                                     my_table.pickup_datetime >= {start_datetime_of_period}
-    #                                     and
-    #                                     my_table.dropoff_datetime <= {end_datetime_of_period}
-    #                                     ;
-    #                                 """
-    #         result = cursor.execute(sql_code)
-
-    #         print("The average between two selected dates is: ", result[0])
-
-    #         self.close_connection(conn,cursor)
-
     def get_average_passenger_count_between_two_dates(
         self, start_datetime_of_period: str, end_datetime_of_period: str
     ):
+        """
+        Connects to azure sql database and retreives average passenger count between two dates.
 
+        :param: start_datetime_of_period:-> string datetime value of beginning of period. eg. 2021-01-02 00:21:34
+        :param: end_datetime_of_period:-> string datime value of the end of period. eg. 2021-06-24 04:12:22
+
+        return:: average passenger count between two dates.
+        """
         conn, cursor = self.create_connection()
         logger.debug("connection was successfull to sql database")
         try:
@@ -194,14 +237,14 @@ class Database_interactions:
                                         a.dropoff_datetime <= '{end_datetime_of_period}' ;
                                     """
             cursor.execute(sql_code)
-            logger.debug(
+            logger.info(
                 "sql code executed successfully to retreive average customer number in time period"
             )
             records = cursor.fetchall()
             logger.debug("records were fetched successfully")
 
             self.close_connection(conn, cursor)
-            logger.debug("connection was closed successfully")
+            logger.info("connection was closed successfully")
         except ConnectionError or ValueError:
             logger.exception("connection or sql code failed. check code")
         finally:
